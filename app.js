@@ -1,26 +1,47 @@
-const express =  require ('express');
+const express = require('express');
 const app = express();
-const bodyParser =  require ('body-parser');
+const bodyParser = require('body-parser');
 const morgan = require('morgan');
-require ('dotenv/config');
-const api = process.env.API_URL;
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv/config');
 
-const Product = require('./models/product')
-const productsRouter =  require ('./routers/products')
-const mongoose = require ('mongoose');
-//midleware
+app.use(cors());
+app.options('*', cors())
+
+//middleware
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
 
-app.use(`${api}/products`, productsRouter);
 
+//Routes
+const categoriesRoutes = require('./routes/categories');
+const productsRoutes = require('./routes/products');
+const usersRoutes = require('./routes/users');
+const ordersRoutes = require('./routes/orders');
 
+const api = process.env.API_URL;
 
+app.use(`${api}/categories`, categoriesRoutes);
+app.use(`${api}/products`, productsRoutes);
+app.use(`${api}/users`, usersRoutes);
+app.use(`${api}/orders`, ordersRoutes);
 
+//Database
+mongoose.connect(process.env.CONNECTION_STRING, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    dbName: 'eshop-database'
+})
+.then(()=>{
+    console.log('Database Connection is ready...')
+})
+.catch((err)=> {
+    console.log(err);
+})
 
-
-
+//Server
 app.listen(3000, ()=>{
 
-    console.log('server is running http://localhost:3000')
+    console.log('server is running http://localhost:3000');
 })
