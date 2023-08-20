@@ -15,10 +15,10 @@ app.use(morgan('tiny'));
 
 
 //Routes
-const categoriesRoutes = require('./routes/categories');
-const productsRoutes = require('./routes/products');
-const usersRoutes = require('./routes/users');
-const ordersRoutes = require('./routes/orders');
+const categoriesRoutes = require('./routers/categories');
+const productsRoutes = require('./routers/products');
+const usersRoutes = require('./routers/users');
+const ordersRoutes = require('./routers/orders');
 
 const api = process.env.API_URL;
 
