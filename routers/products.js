@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 require ('dotenv/config');
 const mongoose = require ('mongoose');
+const { Product } = require('../models/product');
+const { Category } = require('../models/category');
 const api = process.env.API_URL;
 
 router.get(`${api}/products`, async (req,res)=>{
@@ -26,28 +28,27 @@ mongoose.connect(process.env.CONNECTION_STRING, {
 
 
 
-router.post(`${api}/products`,(req,res)=>{
-const product = new Product({
+router.post(`/`,async(req,res)=>{
 
-    name: req.body.name,
-    image: req.body.image,
-    countInStock: req.body.countInStock,
+    const category = await Category.findById(req.body.category);
+    if(!category) return res.status(400).send('Invalid category')
+const product = new Product({
+     name: req.body.name,
+     descreption: req.body.descreption,
+     richDescription: req.body.richDescription,
+     image: req.body.image,
+     brand: req.body.brand,
+     price: req.body.price,
+     category: req.body.category,
+     countInStock: req.body.countInStock,
+    rating: req.body.rating,
+    numReviews: req.body.numReviews,
+     isFeatured: req.body.isFeatured,
     
 })
 
-
-product.save()
-    .then(createdProduct => {
-        res.status(201).json(createdProduct);
-    })
-    .catch(err => {
-        res.status(500).json({
-            error: err,
-            success: false
-        });
-    });
-
-console.log(product);
+if(!product)
+return res.status(500).send('the product cannot be created')
     res.send(product) ;
 })
 
