@@ -6,8 +6,17 @@ const { Product } = require('../models/product');
 const { Category } = require('../models/category');
 const api = process.env.API_URL;
 
-router.get(`${api}/products`, async (req,res)=>{
-    const productList = await Product.find();
+router.get(`/`, async (req,res)=>{
+    const productList = await Product.find().select('name image -_id');
+    if(!productList){
+        res.status(500).json({success: false});
+    }
+    res.send(productList) ;
+})
+
+
+router.get(`/:id`, async (req,res)=>{
+    const productList = await Product.findById(req.params.id);
     if(!productList){
         res.status(500).json({success: false});
     }
