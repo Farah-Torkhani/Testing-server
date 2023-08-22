@@ -6,6 +6,7 @@ const { Product } = require('../models/product');
 const { Category } = require('../models/category');
 const api = process.env.API_URL;
 
+
 router.get(`/`, async (req,res)=>{
     const productList = await Product.find().select('name image -_id category').populate('category');
     if(!productList){
@@ -86,5 +87,23 @@ if(!product){
     }
         res.send(product);
 })
+
+router.delete('/:id', (req, res) => {
+   if( !mongoose.isValidObjectId(req.params.id))
+   {
+return res.status(400).send('Invalid product id')
+   }
+    Product.findByIdAndRemove(req.params.id)
+        .then(Product => {
+            if (Product) {
+                return res.status(200).json({ success: true, message: 'The Product is deleted' });
+            } else {
+                return res.status(404).json({ success: false, message: 'Product not found!' });
+            }
+        })
+        .catch(err => {
+            return res.status(400).json({ success: false, error: err });
+        });
+});
 
 module.exports = router;
