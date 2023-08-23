@@ -106,4 +106,57 @@ return res.status(400).send('Invalid product id')
         });
 });
 
+
+router.get(`/get/count`, async (req,res)=>{
+    const products = await Product.countDocuments((count) => count);
+    if(!products){
+        res.status(500).json({success: false});
+    }
+    res.send(products);
+});
+router.get(`/get/featured`, async (req,res)=>{
+    const productCount = await Product.find({isFeatured: true});
+    if(!productCount){
+        res.status(500).json({success: false});
+    }
+    res.send({productCount : productCount});
+});
+
+router.get(`/get/count`, async (req,res)=>{
+    const products = await Product.countDocuments((count) => count);
+    if(!products){
+        res.status(500).json({success: false});
+    }
+    res.send(products);
+});
+router.get(`/get/featured/:count`, async (req,res)=>{
+    const count = req.params.count ? req.params.count : 0
+    const productCount = await Product.find({isFeatured: true}).limit(+count);
+    if(!productCount){
+        res.status(500).json({success: false});
+    }
+    res.send({productCount : productCount});
+});
+
+
+
+ router.get(`/`, async (req,res)=>{
+    // localhost:3000/api/v1/products?categories=64e217ace2b6a73d1090b4f7,64e217ace2b6a73d1090b4f7
+    let filter = {};
+    if (req.query.categories)
+    {
+        const filter = req.query.categories.split(',')
+    }
+
+    const productList = await Product.find({category: filter}).populate('category');
+
+
+
+
+    if(!productList){
+        res.status(500).json({success: false});
+    }
+    res.send(productList) ;
+})
+
 module.exports = router;
