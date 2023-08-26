@@ -7,8 +7,17 @@ const { Category } = require('../models/category');
 const api = process.env.API_URL;
 
 
+// router.get(`/`, async (req,res)=>{
+//     const productList = await Product.find().select('name image -_id category').populate('category');
+//     if(!productList){
+//         res.status(500).json({success: false});
+//     }
+//     res.send(productList) ;
+// })
+
+
 router.get(`/`, async (req,res)=>{
-    const productList = await Product.find().select('name image -_id category').populate('category');
+    const productList = await Product.find().populate('category');
     if(!productList){
         res.status(500).json({success: false});
     }
