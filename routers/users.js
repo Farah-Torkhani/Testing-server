@@ -38,4 +38,20 @@ router.post('/',async(req,res)=>{
         res.send(user);
 })
 
+router.get(`/`, async (req,res)=>{
+    const usersList = await User.find().select('name phone emai');
+    if(!usersList){
+        res.status(500).json({success: false});
+    }
+    res.send(usersList) ;
+})
+
+router.get(`/:id`, async (req,res)=>{
+    const usersList = await User.findById(req.params.id).select('-paswordHash');
+    if(!usersList){
+        res.status(500).json({success: false});
+    }
+    res.send(usersList) ;
+})
+
 module.exports =router;
